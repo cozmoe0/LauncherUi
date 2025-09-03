@@ -560,9 +560,120 @@ export function GameLauncher() {
         onTabChange={setActiveTab}
       />
 
-      <div className="relative z-10 p-6 pr-20">
-        <div className="max-w-2xl mx-auto space-y-4">
-          {renderContent()}
+      <div className="relative z-10 h-screen flex flex-col pr-20">
+        {/* Fixed Header */}
+        <div className="flex-shrink-0 p-6">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center">
+              <motion.h1
+                className="text-4xl text-white mb-2 tracking-wide relative"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              >
+                Rune
+                <span className="text-emerald-400">
+                  Launcher
+                </span>
+              </motion.h1>
+              <p className="text-slate-400">
+                Custom Jagex Launcher for Any Java/Native Client
+                binary
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Scrollable Content Area */}
+        <div className="flex-1 overflow-y-auto px-6">
+          <div className="max-w-2xl mx-auto space-y-4">
+            {renderContent()}
+          </div>
+        </div>
+
+        {/* Fixed Footer with Add Game Account Button */}
+        <div className="flex-shrink-0 p-6">
+          <div className="max-w-2xl mx-auto">
+            <Dialog
+              open={isAddDialogOpen}
+              onOpenChange={setIsAddDialogOpen}
+            >
+              <DialogTrigger asChild>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6">
+                    <Plus className="w-5 h-5 mr-2" />
+                    Add Game Account
+                  </Button>
+                </motion.div>
+              </DialogTrigger>
+              <DialogContent className="bg-slate-800 border-slate-700 text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-white">
+                    Add New Game Account
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-2">
+                    <Label
+                      htmlFor="account-name"
+                      className="text-slate-300"
+                    >
+                      Account Name
+                    </Label>
+                    <Input
+                      id="account-name"
+                      value={newAccountName}
+                      onChange={(e) =>
+                        setNewAccountName(e.target.value)
+                      }
+                      placeholder="Enter account name"
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label
+                      htmlFor="account-email"
+                      className="text-slate-300"
+                    >
+                      Email
+                    </Label>
+                    <Input
+                      id="account-email"
+                      type="email"
+                      value={newAccountEmail}
+                      onChange={(e) =>
+                        setNewAccountEmail(e.target.value)
+                      }
+                      placeholder="Enter email address"
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-2 justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsAddDialogOpen(false)}
+                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={addAccount}
+                    disabled={
+                      !newAccountName.trim() ||
+                      !newAccountEmail.trim()
+                    }
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    Add Account
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </div>
     </>
