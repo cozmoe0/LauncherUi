@@ -491,6 +491,8 @@ export function GameLauncher() {
           </div>
         </div>
 
+        <div className="flex flex-1 h-full"></div>
+        
         {/* Bottom Button */}
         <div className="flex-shrink-0 p-6">
           <div className="max-w-2xl mx-auto">
