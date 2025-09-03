@@ -187,320 +187,220 @@ export function GameLauncher() {
     switch (activeTab) {
       case "accounts":
         return (
-          <>
-            <div className="text-center mb-8">
-              <motion.h1
-                className="text-4xl text-white mb-2 tracking-wide relative"
-                initial={{ opacity: 0, y: -10 }}
+          <AnimatePresence>
+            {accounts.map((account) => (
+              <motion.div
+                key={account.id}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
               >
-                Rune
-                <span className="text-emerald-400">
-                  Launcher
-                </span>
-              </motion.h1>
-              <p className="text-slate-400">
-                Custom Jagex Launcher for Any Java/Native Client
-                binary
-              </p>
-            </div>
+                <Card className="bg-slate-800/90 border-slate-700 backdrop-blur-sm">
+                  <Collapsible
+                    open={expandedAccounts.has(account.id)}
+                    onOpenChange={() =>
+                      toggleAccount(account.id)
+                    }
+                  >
+                    <div className="p-4">
+                      <div className="flex items-center justify-between">
+                        <CollapsibleTrigger asChild>
+                          <div className="flex items-center gap-3 cursor-pointer flex-1">
+                            <Avatar className="w-10 h-10">
+                              <AvatarFallback className="bg-emerald-600 text-white">
+                                {getAccountInitials(
+                                  account.accountName,
+                                )}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <h3 className="text-white">
+                                {account.accountName}
+                              </h3>
+                              <p className="text-slate-400 text-sm">
+                                {account.email}
+                              </p>
+                            </div>
+                            <motion.div
+                              animate={{
+                                rotate: expandedAccounts.has(
+                                  account.id,
+                                )
+                                  ? 180
+                                  : 0,
+                              }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <ChevronDown className="w-5 h-5 text-slate-400" />
+                            </motion.div>
+                          </div>
+                        </CollapsibleTrigger>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            removeAccount(account.id)
+                          }
+                          className="text-red-400 hover:text-red-300 hover:bg-red-950/20 ml-2"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
 
-            <AnimatePresence>
-              {accounts.map((account) => (
-                <motion.div
-                  key={account.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Card className="bg-slate-800/90 border-slate-700 backdrop-blur-sm">
-                    <Collapsible
-                      open={expandedAccounts.has(account.id)}
-                      onOpenChange={() =>
-                        toggleAccount(account.id)
-                      }
-                    >
-                      <div className="p-4">
-                        <div className="flex items-center justify-between">
-                          <CollapsibleTrigger asChild>
-                            <div className="flex items-center gap-3 cursor-pointer flex-1">
-                              <Avatar className="w-10 h-10">
-                                <AvatarFallback className="bg-emerald-600 text-white">
-                                  {getAccountInitials(
-                                    account.accountName,
-                                  )}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <h3 className="text-white">
-                                  {account.accountName}
-                                </h3>
-                                <p className="text-slate-400 text-sm">
-                                  {account.email}
+                      <CollapsibleContent>
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{
+                            height: "auto",
+                            opacity: 1,
+                          }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <Separator className="my-4 bg-slate-700" />
+
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-slate-300">
+                              <User className="w-4 h-4" />
+                              <span className="text-sm uppercase tracking-wide">
+                                Characters
+                              </span>
+                            </div>
+
+                            {account.characters.map(
+                              (character) => (
+                                <motion.div
+                                  key={character.id}
+                                  className="bg-slate-750 rounded-lg p-3 border border-slate-700"
+                                  whileHover={{
+                                    backgroundColor:
+                                      "rgb(51 65 85)",
+                                  }}
+                                  transition={{
+                                    duration: 0.2,
+                                  }}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <h4
+                                          className={`${character.name ? "text-white" : "text-slate-400 italic"}`}
+                                        >
+                                          {character.name ||
+                                            "Unnamed Character"}
+                                        </h4>
+                                        <Badge
+                                          variant="secondary"
+                                          className="bg-slate-600 text-slate-200 text-xs"
+                                        >
+                                          Lvl{" "}
+                                          {character.level}
+                                        </Badge>
+                                        <Badge
+                                          variant="outline"
+                                          className={`border-slate-600 text-xs ${
+                                            character.className ===
+                                            "New Character"
+                                              ? "text-amber-400 border-amber-400"
+                                              : "text-slate-300"
+                                          }`}
+                                        >
+                                          {
+                                            character.className
+                                          }
+                                        </Badge>
+                                      </div>
+                                      <div className="flex gap-4 text-sm text-slate-400">
+                                        <span>
+                                          Last played:{" "}
+                                          {
+                                            character.lastPlayed
+                                          }
+                                        </span>
+                                        <span>
+                                          Playtime:{" "}
+                                          {
+                                            character.totalPlaytime
+                                          }
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <Button
+                                      onClick={() =>
+                                        playCharacter(
+                                          character.id,
+                                        )
+                                      }
+                                      disabled={
+                                        playingCharacter ===
+                                        character.id
+                                      }
+                                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-6"
+                                    >
+                                      {playingCharacter ===
+                                      character.id ? (
+                                        <motion.div
+                                          animate={{
+                                            rotate: 360,
+                                          }}
+                                          transition={{
+                                            duration: 1,
+                                            repeat: Infinity,
+                                            ease: "linear",
+                                          }}
+                                          className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                                        />
+                                      ) : (
+                                        <>
+                                          <Play className="w-4 h-4 mr-2" />
+                                          {character.name
+                                            ? "Play"
+                                            : "Create & Play"}
+                                        </>
+                                      )}
+                                    </Button>
+                                  </div>
+                                </motion.div>
+                              ),
+                            )}
+
+                            {/* Create Character Button */}
+                            <motion.div
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <Button
+                                onClick={() =>
+                                  createCharacter(account.id)
+                                }
+                                variant="outline"
+                                className="w-full border-slate-600 text-slate-300 bg-slate-600 hover:bg-slate-700 hover:text-white border-dashed py-3"
+                              >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Create New Character
+                              </Button>
+                            </motion.div>
+
+                            {account.characters.length ===
+                              0 && (
+                              <div className="text-center py-4 text-slate-400">
+                                <User className="w-6 h-6 mx-auto mb-1 opacity-50" />
+                                <p className="text-xs">
+                                  No characters yet
                                 </p>
                               </div>
-                              <motion.div
-                                animate={{
-                                  rotate: expandedAccounts.has(
-                                    account.id,
-                                  )
-                                    ? 180
-                                    : 0,
-                                }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <ChevronDown className="w-5 h-5 text-slate-400" />
-                              </motion.div>
-                            </div>
-                          </CollapsibleTrigger>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              removeAccount(account.id)
-                            }
-                            className="text-red-400 hover:text-red-300 hover:bg-red-950/20 ml-2"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-
-                        <CollapsibleContent>
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{
-                              height: "auto",
-                              opacity: 1,
-                            }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="overflow-hidden"
-                          >
-                            <Separator className="my-4 bg-slate-700" />
-
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2 text-slate-300">
-                                <User className="w-4 h-4" />
-                                <span className="text-sm uppercase tracking-wide">
-                                  Characters
-                                </span>
-                              </div>
-
-                              {account.characters.map(
-                                (character) => (
-                                  <motion.div
-                                    key={character.id}
-                                    className="bg-slate-750 rounded-lg p-3 border border-slate-700"
-                                    whileHover={{
-                                      backgroundColor:
-                                        "rgb(51 65 85)",
-                                    }}
-                                    transition={{
-                                      duration: 0.2,
-                                    }}
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-1">
-                                          <h4
-                                            className={`${character.name ? "text-white" : "text-slate-400 italic"}`}
-                                          >
-                                            {character.name ||
-                                              "Unnamed Character"}
-                                          </h4>
-                                          <Badge
-                                            variant="secondary"
-                                            className="bg-slate-600 text-slate-200 text-xs"
-                                          >
-                                            Lvl{" "}
-                                            {character.level}
-                                          </Badge>
-                                          <Badge
-                                            variant="outline"
-                                            className={`border-slate-600 text-xs ${
-                                              character.className ===
-                                              "New Character"
-                                                ? "text-amber-400 border-amber-400"
-                                                : "text-slate-300"
-                                            }`}
-                                          >
-                                            {
-                                              character.className
-                                            }
-                                          </Badge>
-                                        </div>
-                                        <div className="flex gap-4 text-sm text-slate-400">
-                                          <span>
-                                            Last played:{" "}
-                                            {
-                                              character.lastPlayed
-                                            }
-                                          </span>
-                                          <span>
-                                            Playtime:{" "}
-                                            {
-                                              character.totalPlaytime
-                                            }
-                                          </span>
-                                        </div>
-                                      </div>
-                                      <Button
-                                        onClick={() =>
-                                          playCharacter(
-                                            character.id,
-                                          )
-                                        }
-                                        disabled={
-                                          playingCharacter ===
-                                          character.id
-                                        }
-                                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-6"
-                                      >
-                                        {playingCharacter ===
-                                        character.id ? (
-                                          <motion.div
-                                            animate={{
-                                              rotate: 360,
-                                            }}
-                                            transition={{
-                                              duration: 1,
-                                              repeat: Infinity,
-                                              ease: "linear",
-                                            }}
-                                            className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
-                                          />
-                                        ) : (
-                                          <>
-                                            <Play className="w-4 h-4 mr-2" />
-                                            {character.name
-                                              ? "Play"
-                                              : "Create & Play"}
-                                          </>
-                                        )}
-                                      </Button>
-                                    </div>
-                                  </motion.div>
-                                ),
-                              )}
-
-                              {/* Create Character Button */}
-                              <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                              >
-                                <Button
-                                  onClick={() =>
-                                    createCharacter(account.id)
-                                  }
-                                  variant="outline"
-                                  className="w-full border-slate-600 text-slate-300 bg-slate-600 hover:bg-slate-700 hover:text-white border-dashed py-3"
-                                >
-                                  <Plus className="w-4 h-4 mr-2" />
-                                  Create New Character
-                                </Button>
-                              </motion.div>
-
-                              {account.characters.length ===
-                                0 && (
-                                <div className="text-center py-4 text-slate-400">
-                                  <User className="w-6 h-6 mx-auto mb-1 opacity-50" />
-                                  <p className="text-xs">
-                                    No characters yet
-                                  </p>
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        </CollapsibleContent>
-                      </div>
-                    </Collapsible>
-                  </Card>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-
-            <Dialog
-              open={isAddDialogOpen}
-              onOpenChange={setIsAddDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6">
-                    <Plus className="w-5 h-5 mr-2" />
-                    Add Game Account
-                  </Button>
-                </motion.div>
-              </DialogTrigger>
-              <DialogContent className="bg-slate-800 border-slate-700 text-white">
-                <DialogHeader>
-                  <DialogTitle className="text-white">
-                    Add New Game Account
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid gap-2">
-                    <Label
-                      htmlFor="account-name"
-                      className="text-slate-300"
-                    >
-                      Account Name
-                    </Label>
-                    <Input
-                      id="account-name"
-                      value={newAccountName}
-                      onChange={(e) =>
-                        setNewAccountName(e.target.value)
-                      }
-                      placeholder="Enter account name"
-                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label
-                      htmlFor="account-email"
-                      className="text-slate-300"
-                    >
-                      Email
-                    </Label>
-                    <Input
-                      id="account-email"
-                      type="email"
-                      value={newAccountEmail}
-                      onChange={(e) =>
-                        setNewAccountEmail(e.target.value)
-                      }
-                      placeholder="Enter email address"
-                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-2 justify-end">
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsAddDialogOpen(false)}
-                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={addAccount}
-                    disabled={
-                      !newAccountName.trim() ||
-                      !newAccountEmail.trim()
-                    }
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                  >
-                    Add Account
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </>
+                            )}
+                          </div>
+                        </motion.div>
+                      </CollapsibleContent>
+                    </div>
+                  </Collapsible>
+                </Card>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         );
 
       case "games":
